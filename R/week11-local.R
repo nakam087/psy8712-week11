@@ -209,7 +209,7 @@ table2_tbl <- tibble(model= c("regression","elastic net","random forests","xgboo
                       parallelized=as.numeric(c(ols_reg_time2,elastic_net_time2,random_forest_time2,eXtreme_time2))
                      )
 
-#The model that benefitted the most from parallelization was the xgboost model. This makes sense because this was the most resource demanding model, and thus allocating 7 cores to the processes sped this up. This made things around 4 times faster.
+#The model that benefitted the most from parallelization was the xgboost model. This makes sense because this was the most resource demanding model, and thus allocating 7 cores to the processes sped this up. This made things around 4 times faster. All the models benefitted from parallelization except for lm, which actually got a bit slower somehow (this was expected because the lecture explained that this shouldn't change too much)
 
 #The difference between the fastest (elasticnet) and slowest model(xgboost) was around 63 seconds. This difference is large because xgboost is more complicated generally (gradient boosting and can be used to fit any decision tree-based model). The xgboost also tends to be able to fit the training data better, but this may cause overfitting.
 
