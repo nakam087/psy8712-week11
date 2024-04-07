@@ -7,12 +7,10 @@ library(parallel)
 library(doParallel)
 library(tictoc)
 
-# adopted the majority of your code because it was simpler and deleted all of my random incorrect hyperparameters from last week
-
 # Data Import and Cleaning
 gss_import_tbl <- read_spss("../data/GSS2016.sav") %>%
   filter(!is.na(MOSTHRS)) %>%
-  select(-HRS1, -HRS2,-USUALHRS,-LEASTHRS) #looked in documentation for other columns that included hrs
+  select(-HRS1, -HRS2,-USUALHRS,-LEASTHRS) 
 
 gss_tbl <- gss_import_tbl[, colSums(is.na(gss_import_tbl))<.75*nrow(gss_import_tbl)] %>%
   mutate(across(everything(), as.numeric))
@@ -30,7 +28,6 @@ train_tbl <- gss_tbl[-split,]
 
 folds<-createFolds(train_tbl$MOSTHRS)
 
-#starting tic
 tic()
 ols_reg<- train(MOSTHRS ~ .,
                 train_tbl,
@@ -43,8 +40,8 @@ ols_reg<- train(MOSTHRS ~ .,
                                          verboseIter=T, 
                                          indexOut = folds)
 )
-ols_reg_tt<-toc() #stopping time, saving
-ols_reg_time1<-(ols_reg_tt$toc-ols_reg_tt$tic) #getting time taken
+ols_reg_tt<-toc()
+ols_reg_time1<-(ols_reg_tt$toc-ols_reg_tt$tic)
 ols_reg
 cv_m1 <- ols_reg$results$Rsquared
 holdout_m1 <- cor(
@@ -115,9 +112,9 @@ holdout_m4 <- cor(
 summary(resamples(list(ols_reg, elastic_net, random_forest, eXtreme)), metric="Rsquared")
 dotplot(resamples(list(ols_reg, elastic_net, random_forest, eXtreme)), metric="Rsquared")
 
-#now we are going to do it with clustering!
-local_cluster <- makeCluster(detectCores()-1) #making cluster, on my computer should be 7 cores
-registerDoParallel(local_cluster) #telling following MLs to be run in parallel if possible
+local_cluster <- makeCluster(detectCores()-1) 
+registerDoParallel(local_cluster) 
+
 tic()
 ols_reg<- train(MOSTHRS ~ .,
                 train_tbl,
@@ -130,8 +127,8 @@ ols_reg<- train(MOSTHRS ~ .,
                                          verboseIter=T, 
                                          indexOut = folds)
 )
-ols_reg_tt_para<-toc() #stopping time, saving
-ols_reg_time2<-(ols_reg_tt_para$toc-ols_reg_tt_para$tic) #getting time taken
+ols_reg_tt_para<-toc() 
+ols_reg_time2<-(ols_reg_tt_para$toc-ols_reg_tt_para$tic) 
 
 tic()
 elastic_net<- train(
@@ -178,7 +175,7 @@ eXtreme<- train(
 eXtreme_tt_para<-toc() 
 eXtreme_time2<-(eXtreme_tt_para$toc-eXtreme_tt_para$tic)
 
-stopCluster(local_cluster) #stopping parallelization
+stopCluster(local_cluster) 
 registerDoSEQ()
 
 # Publication
@@ -204,14 +201,7 @@ table1_tbl <- tibble(
   )
 )
 
-#making a table
-table2_tbl <- tibble(model= c("regression","elastic net","random forests","xgboost"), #model name
-                      original= as.numeric(c(ols_reg_time1,elastic_net_time1, random_forest_time1,eXtreme_time1)), #time original models took
-                      parallelized=as.numeric(c(ols_reg_time2,elastic_net_time2,random_forest_time2,eXtreme_time2)) #time parallelized models took
+table2_tbl <- tibble(model= c("regression","elastic net","random forests","xgboost"),
+                      original= as.numeric(c(ols_reg_time1,elastic_net_time1, random_forest_time1,eXtreme_time1)),
+                      parallelized=as.numeric(c(ols_reg_time2,elastic_net_time2,random_forest_time2,eXtreme_time2))
                      )
-
-#The model that benefitted the most from parallelization was the xgboost model. This makes sense because this was the most resource demanding model, and thus allocating 7 cores to the processes sped this up. This made things around 4 times faster. All the models benefitted from parallelization except for lm, which actually got a bit slower somehow (this was expected because the lecture explained that this shouldn't change too much)
-
-#The difference between the fastest (elasticnet) and slowest model(xgboost) was around 63 seconds. This difference is large because xgboost is more complicated generally (gradient boosting and can be used to fit any decision tree-based model). The xgboost also tends to be able to fit the training data better, but this may cause overfitting.
-
-# According to my tables, the random forest model is able to predict the holdout sample with the highest R^2, while also not taking overly long with parallelization (less than xgboost by about 2x). Thus, for high predictive value + relatively "fast" run-rate, I would pick this one! (Ideally, elastic net, if had better predictive abilities for the data would have been my choice because it runs *extremely* fast compared to the other models, but unfortunately, it's prediction on the holdout sample had a very low R^2)
