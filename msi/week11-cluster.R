@@ -183,7 +183,7 @@ thanks_richard <- function (formatme) {
   return(formatme)
 }
 
-table1_tbl <- tibble(
+table3_tbl <- tibble( #changed table 1 to 3
   algo = c("regression","elastic net","random forests","xgboost"),
   cv_rqs = c(
     thanks_richard(cv_m1),
@@ -199,7 +199,7 @@ table1_tbl <- tibble(
   )
 )
 
-table2_tbl <- tibble(model= c("regression","elastic net","random forests","xgboost"),
-                      original= as.numeric(c(ols_reg_time1,elastic_net_time1, random_forest_time1,eXtreme_time1)),
-                      parallelized=as.numeric(c(ols_reg_time2,elastic_net_time2,random_forest_time2,eXtreme_time2))
+table4_tbl <- tibble(model= c("regression","elastic net","random forests","xgboost"), #changed table 2 to 4
+                      supercomputer= as.numeric(c(ols_reg_time1,elastic_net_time1, random_forest_time1,eXtreme_time1)),
+                      supercomputer_num=as.numeric(c(ols_reg_time2,elastic_net_time2,random_forest_time2,eXtreme_time2))
                      )
