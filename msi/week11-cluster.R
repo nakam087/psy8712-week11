@@ -205,5 +205,5 @@ table4_tbl <- tibble(model= c("regression","elastic net","random forests","xgboo
                      )
 
 #writing csv files from tables
-write_csv(table3_tbl, "../out/table3.csv")
-write_csv(table4_tbl, "../out/table4.csv")
+write_csv(table3_tbl, "table3.csv")
+write_csv(table4_tbl, "table4.csv")
