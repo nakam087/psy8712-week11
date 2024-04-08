@@ -1,0 +1,5 @@
+algo,cv_rqs,ho_rqs
+regression,.18,.00
+elastic net,.84,.10
+random forests,.89,.31
+xgboost,.95,.29
