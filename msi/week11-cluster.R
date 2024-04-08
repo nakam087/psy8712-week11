@@ -1,5 +1,5 @@
 # Script Settings and Resources
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+#removed setwd
 library(tidyverse)
 library(haven)
 library(caret)
@@ -15,9 +15,7 @@ gss_import_tbl <- read_spss("../data/GSS2016.sav") %>%
 gss_tbl <- gss_import_tbl[, colSums(is.na(gss_import_tbl))<.75*nrow(gss_import_tbl)] %>%
   mutate(across(everything(), as.numeric))
 
-# Visualization
-ggplot(gss_tbl,aes(x=MOSTHRS))+ 
-  geom_histogram()
+#visualization removed
 
 # Analysis 
 split <- createDataPartition(gss_tbl$MOSTHRS,
