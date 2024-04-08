@@ -208,8 +208,8 @@ table4_tbl <- tibble(model= c("regression","elastic net","random forests","xgboo
 write_csv(table3_tbl, "table3.csv")
 write_csv(table4_tbl, "table4.csv")
 
-#All of the models benefited from the supercomputer approach, even the lm (by a bit)! The one that benefited the most, though, was the xgboost by far, which went from taking around 250 seconds to taking only 20. 
+#All of the models benefited from the supercomputer approach, even the lm (by a bit)! The one that benefited the most, though, was the xgboost by far, which went from taking around 250 seconds to taking only 20, decreasing by around 10.6 times. 
 
-#More cores used means less time! This could be seen by comparing table 2 to table 4, where compared to my 7 core parallelization, parallelization with 15 cores was much, much faster.
+#More cores used means less time! Time and cores have a negative relationship. This could be seen by comparing table 2 to table 4, where compared to my 7 core parallelization, parallelization with 15 cores was much, much faster.
 
 #I would recommend the xgboost, glmnet, and random forests for the supercomputer. It would be nice for speed purposes, since both of these take quite a bit of time, especially if we were running more data. I can't really see the use for lm and the supercomputer, but if it was a available, it is a handy resource!
