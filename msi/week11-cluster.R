@@ -110,7 +110,7 @@ holdout_m4 <- cor(
 summary(resamples(list(ols_reg, elastic_net, random_forest, eXtreme)), metric="Rsquared")
 dotplot(resamples(list(ols_reg, elastic_net, random_forest, eXtreme)), metric="Rsquared")
 
-local_cluster <- makeCluster(detectCores()-1) 
+local_cluster <- makeCluster(15) 
 registerDoParallel(local_cluster) 
 
 tic()
@@ -201,5 +201,9 @@ table3_tbl <- tibble( #changed table 1 to 3
 
 table4_tbl <- tibble(model= c("regression","elastic net","random forests","xgboost"), #changed table 2 to 4
                       supercomputer= as.numeric(c(ols_reg_time1,elastic_net_time1, random_forest_time1,eXtreme_time1)),
-                      supercomputer_num=as.numeric(c(ols_reg_time2,elastic_net_time2,random_forest_time2,eXtreme_time2))
+                      supercomputer_15=as.numeric(c(ols_reg_time2,elastic_net_time2,random_forest_time2,eXtreme_time2))
                      )
+
+#writing csv files from tables
+write_csv(table3_tbl, "../out/table3.csv")
+write_csv(table4_tbl, "../out/table4.csv")
