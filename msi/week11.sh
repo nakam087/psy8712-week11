@@ -6,6 +6,6 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=nakam087@umn.edu
 #SBATCH -p amdsmall
-cd ~/psych8712-week11/msi
+cd ~/psy8712-week11/msi
 module load R/4.3.0-openblas
 Rscript week11-cluster.R
